@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # my apps
     'index',
     'products',
+    'tsm_api',
 ]
 
 MIDDLEWARE = [

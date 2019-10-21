@@ -22,4 +22,5 @@ urlpatterns = [
     path('product/', include('products.urls')),
     path('user/', include('user.urls')),
     path('dashboard/', include('arduino.urls')),
+    path('api/measurement', include('tsm_api.urls'))
 ]
