@@ -2,33 +2,94 @@
 
 {% block body %}
     <h1>My Dashboard</h1>
-    <canvas id="myChart" width="400" height="400"></canvas>
+    <div style="width: 500px; height: 500px;">
+        <canvas id="myChart" width="200" height="200"></canvas>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js">
+    </script>
+
 {% endblock %}
 
 {% block scripts %}
 
-    <script>
-        let endpoint = '/api/measurement';
+    <script defer>
+        const endpoint = '/api/measurement';
+        const canvas = document.getElementById('myChart');
+        const ctx = canvas.getContext('2d');
+        setInterval(function () {
+            $.ajax({
+                method: "GET",
+                url: endpoint,
+                success: function (data) {
+                    let filteredDataArray = data.slice(-10); //TODO: change 1- to -10
+                    let body = [];
+                    filteredDataArray.map(e => {
+                        body.push(Number(e.power))
+                    });
 
-        $.ajax({
-            method: "GET",
-            url: endpoint,
-            success: function (data) {
-                let filteredDataArray = data.slice(-10); //TODO: change 1- to -10
-                console.log(filteredDataArray);
+                    console.log(filteredDataArray, body);
 
-                let myLineChart = new Chart(ctx, {
-                    type: 'line',
-                    data: data,
-                    options: options
-                });
-            },
-            error: function (error) {
-                console.log(error)
-            }
-        })
+                    let myLineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: ["3", "6", "9", "12", "15", "18", "21", "24", "27", "30"],
+                            datasets: [{
+                                label: "Power consumption",
+                                borderColor: "#80b6f4",
+                                pointBorderColor: "#80b6f4",
+                                pointBackgroundColor: "#80b6f4",
+                                pointHoverBackgroundColor: "#80b6f4",
+                                pointHoverBorderColor: "#80b6f4",
+                                pointBorderWidth: 10,
+                                pointHoverRadius: 10,
+                                pointHoverBorderWidth: 1,
+                                pointRadius: 3,
+                                fill: true,
+                                borderWidth: 4,
+                                data: body
+                            }]
+                        },
+                        options: {
+                            legend: {
+                                position: "bottom"
+                            },
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        fontColor: "rgba(0,0,0,0.5)",
+                                        fontStyle: "bold",
+                                        beginAtZero: true,
+                                        maxTicksLimit: 5,
+                                        padding: 20
+                                    },
+                                    gridLines: {
+                                        drawTicks: false,
+                                        display: false
+                                    }
+
+                                }],
+                                xAxes: [{
+                                    gridLines: {
+                                        zeroLineColor: "transparent"
+                                    },
+                                    ticks: {
+                                        padding: 20,
+                                        fontColor: "rgba(0,0,0,0.5)",
+                                        fontStyle: "bold"
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            })
+        }, 3000)
+
     </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js">
-    </script>
 {% endblock %}
