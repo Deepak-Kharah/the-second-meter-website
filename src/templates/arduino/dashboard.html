@@ -1,95 +1,216 @@
 {% extends 'index/base.html' %}
 
+{% block title %}
+    My Dashboard
+{% endblock %}
+
 {% block body %}
-    <h1>My Dashboard</h1>
-    <div style="width: 500px; height: 500px;">
-        <canvas id="myChart" width="200" height="200"></canvas>
+
+    <div class="container">
+        <br>
+        <br>
+        <h1 class="title">My Dashboard</h1>
+        <div class="columns">
+
+            <div class="column">
+                <div>
+
+                    <canvas id="myChart" width="500" height="500"></canvas>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card">
+                    <div class="card-content">
+                        <p class="content">Price evaluated</p>
+                        <p class="title is-4">₹ 0.05</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js">
+        </script>
 
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js">
-    </script>
-
 {% endblock %}
 
 {% block scripts %}
 
-    <script defer>
-        const endpoint = '/api/measurement';
-        const canvas = document.getElementById('myChart');
-        const ctx = canvas.getContext('2d');
-        setInterval(function () {
-            $.ajax({
-                method: "GET",
-                url: endpoint,
-                success: function (data) {
-                    let filteredDataArray = data.slice(-10); //TODO: change 1- to -10
-                    let body = [];
-                    filteredDataArray.map(e => {
-                        body.push(Number(e.power))
-                    });
+        <script defer>
+            const endpoint = '/api/measurement';
+            const canvas = document.getElementById('myChart');
+            const ctx = canvas.getContext('2d');
+            setInterval(function () {
+                $.ajax({
+                    method: "GET",
+                    url: endpoint,
+                    success: function (data) {
+                        let filteredDataArray = data.slice(-10); //TODO: change 1- to -10
+                        let body = [];
+                        filteredDataArray.map(e => {
+                            body.push(Number(e.power))
+                        });
 
-                    console.log(filteredDataArray, body);
+                        console.log(filteredDataArray, body);
 
-                    let myLineChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: ["3", "6", "9", "12", "15", "18", "21", "24", "27", "30"],
-                            datasets: [{
-                                label: "Power consumption",
-                                borderColor: "#80b6f4",
-                                pointBorderColor: "#80b6f4",
-                                pointBackgroundColor: "#80b6f4",
-                                pointHoverBackgroundColor: "#80b6f4",
-                                pointHoverBorderColor: "#80b6f4",
-                                pointBorderWidth: 10,
-                                pointHoverRadius: 10,
-                                pointHoverBorderWidth: 1,
-                                pointRadius: 3,
-                                fill: true,
-                                borderWidth: 4,
-                                data: body
-                            }]
-                        },
-                        options: {
-                            legend: {
-                                position: "bottom"
-                            },
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        fontColor: "rgba(0,0,0,0.5)",
-                                        fontStyle: "bold",
-                                        beginAtZero: true,
-                                        maxTicksLimit: 5,
-                                        padding: 20
-                                    },
-                                    gridLines: {
-                                        drawTicks: false,
-                                        display: false
-                                    }
-
-                                }],
-                                xAxes: [{
-                                    gridLines: {
-                                        zeroLineColor: "transparent"
-                                    },
-                                    ticks: {
-                                        padding: 20,
-                                        fontColor: "rgba(0,0,0,0.5)",
-                                        fontStyle: "bold"
-                                    }
+                        let myLineChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: ["3", "6", "9", "12", "15", "18", "21", "24", "27", "30"],
+                                datasets: [{
+                                    label: "Power consumption",
+                                    borderColor: "#80b6f4",
+                                    pointBorderColor: "#80b6f4",
+                                    pointBackgroundColor: "#80b6f4",
+                                    pointHoverBackgroundColor: "#80b6f4",
+                                    pointHoverBorderColor: "#80b6f4",
+                                    pointBorderWidth: 10,
+                                    pointHoverRadius: 10,
+                                    pointHoverBorderWidth: 1,
+                                    pointRadius: 3,
+                                    fill: true,
+                                    borderWidth: 2,
+                                    data: body
                                 }]
-                            }
-                        }
-                    });
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            })
-        }, 3000)
+                            },
+                            options: {
+                                legend: {
+                                    position: "bottom"
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            fontColor: "rgba(0,0,0,0.5)",
+                                            fontStyle: "bold",
+                                            beginAtZero: true,
+                                            maxTicksLimit: 5,
+                                            padding: 20
+                                        },
+                                        gridLines: {
+                                            drawTicks: false,
+                                            display: false
+                                        }
 
-    </script>
+                                    }],
+                                    xAxes: [{
+                                        gridLines: {
+                                            zeroLineColor: "transparent"
+                                        },
+                                        ticks: {
+                                            padding: 20,
+                                            fontColor: "rgba(0,0,0,0.5)",
+                                            fontStyle: "bold"
+                                        }
+                                    }]
+                                },
+                                responsive: true
+                            }
+                        });
+                    },
+                    error: function (error) {
+                        console.log(error)
+                    }
+                })
+            }, 3000)
+
+        </script>
+
+{#    <script defer>#}
+{#        const endpoint = '/api/measurement';#}
+{#        const ctx = $('#myChart');#}
+{##}
+{#        let myData = [];#}
+{#        $.ajax({#}
+{#            method: "GET",#}
+{#            url: endpoint,#}
+{#            success: function (res) {#}
+{#                let filteredDataArray = res.slice(-10); //TODO: change 1- to -10#}
+{#                filteredDataArray.map(d => {#}
+{#                    myData.push(Number(d.power))#}
+{#                });#}
+{#                console.log(filteredDataArray, myData)#}
+{#            },#}
+{#            error: (err) => {#}
+{#                console.error(err.message)#}
+{#            }#}
+{#        });#}
+{##}
+{#        let powerChart = new Chart(ctx, {#}
+{#            type: 'line',#}
+{#            data: {#}
+{#                labels: ["3", "6", "9", "12", "15", "18", "21", "24", "27", "30"],#}
+{#                datasets: [{#}
+{#                    label: "Power consumption",#}
+{#                    borderColor: "#80b6f4",#}
+{#                    pointBorderColor: "#80b6f4",#}
+{#                    pointBackgroundColor: "#80b6f4",#}
+{#                    pointHoverBackgroundColor: "#80b6f4",#}
+{#                    pointHoverBorderColor: "#80b6f4",#}
+{#                    pointBorderWidth: 10,#}
+{#                    pointHoverRadius: 10,#}
+{#                    pointHoverBorderWidth: 1,#}
+{#                    pointRadius: 3,#}
+{#                    fill: true,#}
+{#                    borderWidth: 4,#}
+{#                    data: myData#}
+{#                }]#}
+{#            },#}
+{#            options: {#}
+{#                legend: {#}
+{#                    position: "bottom"#}
+{#                },#}
+{#                scales: {#}
+{#                    yAxes: [{#}
+{#                        ticks: {#}
+{#                            fontColor: "rgba(0,0,0,0.5)",#}
+{#                            fontStyle: "bold",#}
+{#                            beginAtZero: true,#}
+{#                            maxTicksLimit: 5,#}
+{#                            padding: 20#}
+{#                        },#}
+{#                        gridLines: {#}
+{#                            drawTicks: false,#}
+{#                            display: false#}
+{#                        }#}
+{##}
+{#                    }],#}
+{#                    xAxes: [{#}
+{#                        gridLines: {#}
+{#                            zeroLineColor: "transparent"#}
+{#                        },#}
+{#                        ticks: {#}
+{#                            padding: 20,#}
+{#                            fontColor: "rgba(0,0,0,0.5)",#}
+{#                            fontStyle: "bold"#}
+{#                        }#}
+{#                    }]#}
+{#                }#}
+{#            }#}
+{#        });#}
+{##}
+{#        setInterval(() => {#}
+{##}
+{#            $.ajax({#}
+{#                method: "GET",#}
+{#                url: endpoint,#}
+{#                success: (res) => {#}
+{#                    myData = [];#}
+{#                    let filteredDataArray = res.slice(-10); //TODO: change 1- to -10#}
+{#                    filteredDataArray.map(d => {#}
+{#                        myData.push(Number(d.power))#}
+{#                    });#}
+{##}
+{#                    console.log(filteredDataArray, myData);#}
+{##}
+{#                    powerChart.data.datasets[0] = myData;#}
+{#                    powerChart.update()#}
+{#                },#}
+{#                error: (err) => {#}
+{#                    console.error(err.message)#}
+{#                }#}
+{#            });#}
+{#        }, 3000)#}
+{##}
+{#    </script>#}
 
 {% endblock %}
